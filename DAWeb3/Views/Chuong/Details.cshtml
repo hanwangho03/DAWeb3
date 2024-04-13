@@ -1,0 +1,38 @@
+﻿@model DAWeb3.Models.Chuong
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Chuong</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Tên Chương
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tenchuong)
+        </dd>
+        <dt class = "col-sm-2">
+            Thẻ MeTa
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Meta)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            Tên Môn Học
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdMonHocNavigation.TenMonHoc)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdChuong">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

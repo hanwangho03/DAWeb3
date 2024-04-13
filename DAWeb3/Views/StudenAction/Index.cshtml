@@ -1,0 +1,62 @@
+﻿@model IEnumerable<DAWeb3.Models.DeThi>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["AlertMessage"]
+    </div>
+}
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Ngày thi
+            </th>
+            <th>
+                Thời gian
+            </th>
+            
+            <th>
+                Tên đề thi 
+            </th>
+            
+            <th>
+                Người tạo
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayThi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThoiGianThi)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.TenDeThi)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.NguoiTaoNavigation.Hoten)
+            </td>
+            <td>
+                <a asp-action="Start" asp-route-id="@item.IdDeThi">Bắt đầu thi</a> 
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

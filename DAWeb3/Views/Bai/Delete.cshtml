@@ -1,0 +1,41 @@
+﻿@model DAWeb3.Models.Bai
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Bai</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Tên Bài
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TenBai)
+        </dd>
+        <dt class = "col-sm-2">
+            Thẻ Meta
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Meta)
+        </dd>
+      
+        <dt class = "col-sm-2">
+            Tên Chương
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdchuongNavigation.IdChuong)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Idbai" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

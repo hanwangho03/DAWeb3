@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DAWeb3.Models.DeThi>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên Đề Thi
+            </th>
+            <th>
+                Thời gian thi
+            </th>
+
+            <th>
+                Ngày Thi
+            </th>
+            <th>
+                Người tạo
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                   @Html.DisplayFor(modelItem => item.TenDeThi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThoiGianThi) phút
+            </td>
+           
+            <td>
+                    @Html.DisplayFor(modelItem => item.NgayThi)
+            </td>
+            
+            <td>
+                    @Html.DisplayFor(modelItem => item.NguoiTaoNavigation.Hoten)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdDeThi">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdDeThi">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdDeThi">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

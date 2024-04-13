@@ -1,0 +1,172 @@
+﻿@model List<CauHoi>
+
+@{
+    ViewData["Title"] = "Bắt đầu thi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Danh sách câu hỏi</h2>
+            
+            <div id="thoiGianConLai"></div>
+            <input type="hidden" id="selectedDeThiId" value="@ViewBag.DeThiId" />
+            <form id="thiForm">
+                <ol>
+                    @{
+                        int count = 0; // Khởi tạo biến đếm
+                    }
+                    @foreach (var cauHoi in Model)
+                    {
+                        <li>@cauHoi.CauHoi1</li>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="1">
+                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnA</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="2">
+                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnB</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="3">
+                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnC</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="4">
+                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnD</label>
+                        </div>
+                        <button type="button" onclick="saveAnswer('@cauHoi.IdCauhoi', this)">Lưu</button>
+                        <hr/>
+                        count++;
+                    }
+                </ol>
+                <button type="button" onclick="submitAnswers()">Nộp bài</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var idDeThi = $('#selectedDeThiId').val();
+        $.ajax({
+            url: '/StudenAction/GetThoiGianThi',
+            type: 'GET',
+            data: { maDeThi: idDeThi },
+            success: function (thoiGianThi) {
+                // Hiển thị thời gian thi trên màn hình
+                $('#thoiGianThi').text('Thời gian thi: ' + thoiGianThi + ' phút');
+
+                // Bắt đầu bộ đếm đếm ngược
+                var countdown = thoiGianThi * 60; // Chuyển đổi số phút thành giây
+
+                var timer = setInterval(function () {
+                    var minutes = Math.floor(countdown / 60);
+                    var seconds = countdown % 60;
+
+                    // Hiển thị thời gian đếm ngược trên màn hình
+                    $('#thoiGianConLai').text('Thời gian còn lại: ' + minutes + ' phút ' + seconds + ' giây');
+
+                    // Giảm thời gian đếm ngược đi 1 giây
+                    countdown--;
+
+                    // Kiểm tra nếu thời gian đếm ngược đã hết
+                    if (countdown < 0) {
+                        clearInterval(timer); // Dừng bộ đếm
+                        $('#thoiGianConLai').text('Hết thời gian thi');
+                        submitAnswers();
+                    }
+                }, 1000); // Đếm ngược mỗi 1 giây
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi lấy thời gian thi từ server.");
+            }
+        });
+        var tongSoCauDung = 0; // Biến để lưu tổng số câu đúng
+
+        function saveAnswer(cauHoiId, button) {
+            // Thực hiện cuộc gọi AJAX để lấy dapAnDung từ controller
+            $.ajax({
+                url: '/StudenAction/GetDapAnDung',
+                type: 'GET',
+                data: { cauHoiId: cauHoiId },
+                success: function (dapAnDung) {
+                    // Tiếp tục xử lý với dapAnDung đã nhận được
+                    var radioButtons = document.getElementsByName("dapAn_" + cauHoiId);
+                    var isChecked = false;
+                    var daChon = null; // Lưu id của đáp án đã chọn
+                    for (var i = 0; i < radioButtons.length; i++) {
+                        if (radioButtons[i].checked) {
+                            isChecked = true;
+                            daChon = radioButtons[i].value; // Lấy id của đáp án đã chọn
+                            break;
+                        }
+                    }
+
+                    // Nếu không có radio button nào được chọn, hiển thị cảnh báo và không thực hiện lưu
+                    if (!isChecked) {
+                        alert("Vui lòng chọn một câu trả lời trước khi lưu.");
+                        return;
+                    }
+
+                    // Hiển thị id của đáp án đã chọn ra màn hình để kiểm tra
+                    alert("Id đáp án đã chọn: " + daChon);
+
+                    // Kiểm tra đáp án đã chọn có đúng không
+                    if (daChon == dapAnDung) {
+                        alert("Đáp án đã chọn là đúng!");
+                        tongSoCauDung++; // Tăng tổng số câu đúng lên nếu đáp án chọn đúng
+                    } else {
+                        alert("Đáp án đã chọn là không đúng!");
+                    }
+
+                    // Xử lý lưu câu trả lời của câu hỏi có ID là cauHoiId
+                    button.disabled = true; // Vô hiệu hóa nút "Lưu" sau khi đã lưu
+                    button.style.backgroundColor = "green"; // Thay đổi màu nút "Lưu" thành đỏ
+                    button.innerText = "Đã lưu"; // Thay đổi văn bản của nút "Lưu" thành "Đã lưu"
+                },
+                error: function () {
+                    alert("Đã xảy ra lỗi khi lấy dapAnDung từ server.");
+                }
+            });
+        }
+
+        var hasSubmitted = false; // Biến kiểm tra đã nộp bài hay chưa
+
+        function submitAnswers() {
+            // Kiểm tra nếu đã nộp bài thì không làm gì cả
+            if (hasSubmitted) {
+                alert("Bạn đã nộp bài rồi.");
+                return;
+            }
+
+            var tongSoCau = $('input[type="radio"]').length / 4; // Tổng số câu
+            var diem = (tongSoCauDung) * (10 / tongSoCau); // Tính điểm
+
+            // Hiển thị tổng điểm
+            alert("Tổng điểm: " + diem);
+
+            // Reset tổng số câu đúng để sẵn sàng cho lần nộp bài tiếp theo
+            tongSoCauDung = 0;
+
+            // Đặt biến đã nộp bài thành true để ngăn người dùng nộp bài nhiều lần
+            hasSubmitted = true;
+        }
+    </script>
+
+}
+<style>
+    #thoiGianConLai {
+        position: fixed; /* Đảm bảo phần tử này được cố định trên màn hình */
+        top: 20px; /* Điều chỉnh khoảng cách từ phía trên xuống */
+        right: 20px; /* Điều chỉnh khoảng cách từ phía bên phải sang trái */
+        background-color: #f44336; /* Màu nền */
+        color: white; /* Màu chữ */
+        padding: 10px; /* Khoảng cách từ lề đến nội dung bên trong */
+        border-radius: 5px; /* Đường viền cong */
+        z-index: 999; /* Đảm bảo phần tử này luôn hiển thị phía trên các phần tử khác */
+    }
+</style>

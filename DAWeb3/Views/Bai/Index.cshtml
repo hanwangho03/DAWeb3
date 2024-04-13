@@ -1,0 +1,49 @@
+﻿@model IEnumerable<DAWeb3.Models.Bai>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên Bài
+            </th>
+            <th>
+                Thẻ MeTa
+            </th>
+            
+            <th>
+                Tên Chương
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenBai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Meta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdchuongNavigation.Tenchuong)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Idbai">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Idbai">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Idbai">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

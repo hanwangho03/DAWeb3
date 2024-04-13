@@ -1,0 +1,49 @@
+﻿@model DAWeb3.Models.DeThi
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>DeThi</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdDeThi" />
+            <div class="form-group">
+                <label asp-for="NgayThi" class="control-label"> Ngày Thi</label>
+                <input asp-for="NgayThi" class="form-control" />
+                <span asp-validation-for="NgayThi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThoiGianThi" class="control-label">Thời gian thi</label>
+                <input asp-for="ThoiGianThi" class="form-control" />
+                <span asp-validation-for="ThoiGianThi" class="text-danger"></span>
+            </div>
+         
+            <div class="form-group">
+                <label asp-for="TenDeThi" class="control-label">Tên đề thi</label>
+                <input asp-for="TenDeThi" class="form-control" />
+                <span asp-validation-for="TenDeThi" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="NguoiTao" class="control-label">Người tạo</label>
+                <select asp-for="NguoiTao" class="form-control" asp-items="ViewBag.NguoiTao"></select>
+                <span asp-validation-for="NguoiTao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

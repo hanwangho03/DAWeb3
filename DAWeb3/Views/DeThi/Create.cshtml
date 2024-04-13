@@ -1,0 +1,45 @@
+﻿@model DAWeb3.Models.DeThi
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>DeThi</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NgayThi" class="control-label"></label>
+                <input asp-for="NgayThi" class="form-control" />
+                <span asp-validation-for="NgayThi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThoiGianThi" class="control-label"></label>
+                <input asp-for="ThoiGianThi" class="form-control" />
+                <span asp-validation-for="ThoiGianThi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TenDeThi" class="control-label"></label>
+                <input asp-for="TenDeThi" class="form-control" />
+                <span asp-validation-for="TenDeThi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NguoiTao" class="control-label"></label>
+                <select asp-for="NguoiTao" class ="form-control" asp-items="ViewBag.NguoiTao"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

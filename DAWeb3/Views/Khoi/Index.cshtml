@@ -1,0 +1,253 @@
+﻿@model IEnumerable<DAWeb3.Models.Khoi>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Thêm Lớp</h1>
+
+<p>
+    <button class="btn btn-success" id="btnAdd" data-bs-toggle="modal" data-bs-target="#modalLop"><i class="fas fa-plus" aria-hidden="true"></i> Thêm lớp </button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên Khối
+            </th>
+            <th>
+                Thẻ Meta
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="tblDsKhoiBody">
+    </tbody>
+</table>
+<div class="modal fade" id="modalLop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin khối</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <input type="text" hidden id="idkhoi" value=""/>
+                        <div class="form-group">
+                            <label for="tenkhoi" class="form-label">Tên Khối</label>
+                            <input type="text" class="form-control" id="tenkhoi">
+                        </div>
+                        <div class="form-group">
+                            <label for="meta" class="form-label">Thẻ Meta</label>
+                            <input type="text" class="form-control" id="meta">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnsubmit">Xác Nhận</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            LoadDsKhoi();
+        });
+
+        function LoadDsKhoi() {
+            $.ajax({
+                url: '/Khoi/DsKhoi',
+                type: 'get',
+                success: function (data) {
+                    console.log(data);
+                    if (data.code == 200) {
+                        $('#tblDsKhoiBody').empty();
+                        $.each(data.dskhoi, function (k, v) {
+                            let tr = '<tr id="' + v.id + '"> '
+                            tr += '<td class="col-sm-5"> ' + v.tenKhoi + '</td>';
+                            tr += '<td class="col-sm-5"> ' + v.meta + '</td>';
+                            tr += '<td class="col-sm-2"> ';
+                            tr += '<button class="btn btn-xs btn-info" name="view"><i class="fas fa-eye" aria-hidden="true"></i></button>&nbsp';
+                            tr += '<button class="btn btn-xs btn-warning" name="update"><i class="fas fa-edit" aria-hidden="true"></i></button>&nbsp';
+                            tr += '<button class="btn btn-xs btn-danger" name="delete"><i class="fas fa-trash" aria-hidden="true"></i></button>&nbsp';
+                            tr += '</td> ';
+                            tr += '</tr>';
+                            $('#tblDsKhoiBody').append(tr);
+                        });
+                    }
+                }
+            });
+        }
+        $('#btnsubmit').click(function () {
+            let tenKhoi = $('#tenkhoi').val();
+            let meta = $('#meta').val();
+            let idkhoi = $('#idkhoi').val();
+            if (!tenKhoi || !meta) {
+                alert('Vui lòng nhập đầy đủ dữ liệu để tiếp tục!!');
+                return;
+            }
+            let id = parseInt(idkhoi);
+            if (idkhoi.length==0)
+            {
+                $.ajax({
+                    url: '/Khoi/AddLop',
+                    type: 'post',
+                    data: {
+                        tenkhoi: tenKhoi,
+                        meta: meta
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            LoadDsKhoi();
+                            $('#modalLop').modal('hide'); // Đóng modal sau khi thêm thành công
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $.ajax({
+                    url:'/Khoi/Update',
+                    type:'post',
+                    data: {
+                        id:id,
+                        tenkhoi: tenKhoi,
+                        meta: meta
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+
+                            $('#modalLop').modal('hide');
+
+                            LoadDsKhoi();
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                })
+            }
+            //else{
+                // $.ajax({
+                //     url:'/Khoi/Update',
+                //     type:'post',
+                //     data: {
+                //         id:id,
+                //         tenkhoi: tenKhoi,
+                //         meta: meta
+                //     },
+                //     success: function (data) {
+                //         if (data.code == 200) {
+                //             alert(data.msg);
+                //             $('#modalLop').modal('hide');
+                //         }
+                //         else {
+                //             alert(data.msg);
+                //         }
+                //     }
+                // })
+                // alert(1);
+            //}
+            
+        });
+        $(document).on('click', 'button[name="view"]', function () {
+
+            let id = $(this).closest('tr').attr('id');
+
+            // Gửi yêu cầu ajax để lấy thông tin chi tiết của khối
+            $.ajax({
+                url: '/Khoi/GetDetail',
+                type: 'get',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        let tenKhoi = data.k.tenKhoi;
+                        let meta = data.k.meta;
+                        $('#tenkhoi').prop('readonly', true);
+                        $('#meta').prop('readonly', true);
+                        // Hiển thị modal
+                        $('#modalLop').modal('show');
+                        $('#btnsubmit').hide();
+                        // Điền dữ liệu vào modal
+                        $('#tenkhoi').val(tenKhoi);
+                        $('#meta').val(meta);
+                        
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+
+                }
+            });
+        });
+        $(document).on('click', 'button[name="update"]', function () {
+
+            let id = $(this).closest('tr').attr('id');
+
+            // Gửi yêu cầu ajax để lấy thông tin chi tiết của khối
+            $.ajax({
+                url: '/Khoi/GetDetail',
+                type: 'get',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        let tenKhoi = data.k.tenKhoi;
+                        let meta = data.k.meta;
+                        $('#idkhoi').val(id)
+                        $('#tenkhoi').prop('readonly', false);
+                        $('#meta').prop('readonly', false);
+                        // Hiển thị modal
+                        $('#modalLop').modal('show');
+                        
+                        // Điền dữ liệu vào modal
+                        $('#tenkhoi').val(tenKhoi);
+                        $('#meta').val(meta);
+
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+
+                }
+            });
+        });
+        $(document).on('click', 'button[name="delete"]', function () {
+
+            let id = $(this).closest('tr').attr('id');
+            if (confirm("Bạn thực sự muốn xóa khối này?")) {
+                $.ajax({ // Thay $ajax thành $.ajax
+                    url: '/Khoi/Delete', // Thêm dấu / trước Khoi/Delete
+                    type: 'post',
+                    data: {
+                        id: id
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            LoadDsKhoi(); // Thay LoadDsLop thành LoadDsKhoi
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
