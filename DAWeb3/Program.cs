@@ -17,7 +17,10 @@ builder.Services.AddDbContext<WebTracNghiemContext>(options =>
 
 // Add Session
 builder.Services.AddSession();
-
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(120); // Đặt thời gian timeout của session là 30 phút
+});
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 

@@ -4,6 +4,9 @@
     ViewData["Title"] = "Bắt đầu thi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@{
+    var idKetQua = ViewBag.IdKetQua;
+}
 
 <h1>@ViewData["Title"]</h1>
 
@@ -11,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <h2>Danh sách câu hỏi</h2>
-            
+
             <div id="thoiGianConLai"></div>
             <input type="hidden" id="selectedDeThiId" value="@ViewBag.DeThiId" />
             <form id="thiForm">
@@ -23,23 +26,23 @@
                     {
                         <li>@cauHoi.CauHoi1</li>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="1">
-                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnA</label>
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@("dapAn_" + cauHoi.IdCauhoi + "_1")" value="1">
+                            <label class="form-check-label" for="@("dapAn_" + cauHoi.IdCauhoi + "_1")">@cauHoi.DapAnA</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="2">
-                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnB</label>
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@("dapAn_" + cauHoi.IdCauhoi + "_2")" value="2">
+                            <label class="form-check-label" for="@("dapAn_" + cauHoi.IdCauhoi + "_2")">@cauHoi.DapAnB</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="3">
-                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnC</label>
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@("dapAn_" + cauHoi.IdCauhoi + "_3")" value="3">
+                            <label class="form-check-label" for="@("dapAn_" + cauHoi.IdCauhoi + "_3")">@cauHoi.DapAnC</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@cauHoi.IdCauhoi" value="4">
-                            <label class="form-check-label" for="@cauHoi.IdCauhoi">@cauHoi.DapAnD</label>
+                            <input type="radio" class="form-check-input" name="dapAn_@cauHoi.IdCauhoi" id="@("dapAn_" + cauHoi.IdCauhoi + "_4")" value="4">
+                            <label class="form-check-label" for="@("dapAn_" + cauHoi.IdCauhoi + "_4")">@cauHoi.DapAnD</label>
                         </div>
                         <button type="button" onclick="saveAnswer('@cauHoi.IdCauhoi', this)">Lưu</button>
-                        <hr/>
+                        <hr />
                         count++;
                     }
                 </ol>
@@ -49,9 +52,21 @@
     </div>
 </div>
 
+
 @section Scripts {
     <script>
+        $(document).ready(function () {
+            var alertMessage = '@ViewBag.AlertMessage';
+            if (alertMessage) {
+                alert(alertMessage);
+                window.location.href = '@Url.Action("XemChiTiet")';
+            }
+
+        });
+
+        var timer;
         var idDeThi = $('#selectedDeThiId').val();
+
         $.ajax({
             url: '/StudenAction/GetThoiGianThi',
             type: 'GET',
@@ -63,7 +78,7 @@
                 // Bắt đầu bộ đếm đếm ngược
                 var countdown = thoiGianThi * 60; // Chuyển đổi số phút thành giây
 
-                var timer = setInterval(function () {
+                    timer = setInterval(function () {
                     var minutes = Math.floor(countdown / 60);
                     var seconds = countdown % 60;
 
@@ -88,6 +103,8 @@
         var tongSoCauDung = 0; // Biến để lưu tổng số câu đúng
 
         function saveAnswer(cauHoiId, button) {
+            var dapAnDaChon = $("input[name='dapAn_" + cauHoiId + "']:checked").val();
+
             // Thực hiện cuộc gọi AJAX để lấy dapAnDung từ controller
             $.ajax({
                 url: '/StudenAction/GetDapAnDung',
@@ -95,6 +112,7 @@
                 data: { cauHoiId: cauHoiId },
                 success: function (dapAnDung) {
                     // Tiếp tục xử lý với dapAnDung đã nhận được
+                    var idKetQua = @idKetQua;
                     var radioButtons = document.getElementsByName("dapAn_" + cauHoiId);
                     var isChecked = false;
                     var daChon = null; // Lưu id của đáp án đã chọn
@@ -111,9 +129,20 @@
                         alert("Vui lòng chọn một câu trả lời trước khi lưu.");
                         return;
                     }
-
+                    $.ajax({
+                        url: '/StudenAction/SaveAnswer',
+                        type: 'POST',
+                        data: { idKetQua: idKetQua, cauHoiId: cauHoiId, dapandachon: dapAnDaChon, dapandung: dapAnDung },
+                        success: function (response) {
+                            // Xử lý thành công nếu cần
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi khi lưu câu trả lời.");
+                        }
+                    });
                     // Hiển thị id của đáp án đã chọn ra màn hình để kiểm tra
                     alert("Id đáp án đã chọn: " + daChon);
+                    
 
                     // Kiểm tra đáp án đã chọn có đúng không
                     if (daChon == dapAnDung) {
@@ -151,9 +180,24 @@
 
             // Reset tổng số câu đúng để sẵn sàng cho lần nộp bài tiếp theo
             tongSoCauDung = 0;
-
+            clearInterval(timer);
             // Đặt biến đã nộp bài thành true để ngăn người dùng nộp bài nhiều lần
             hasSubmitted = true;
+
+            // Gửi yêu cầu AJAX để cập nhật trạng thái đã nộp và tổng điểm của kết quả
+            var idKetQua = @idKetQua;
+            // Lấy idKetQua từ ViewBag hoặc truyền vào từ view
+            $.ajax({
+                url: '/StudenAction/SubmitAnswers',
+                type: 'POST',
+                data: { idKetQua: idKetQua, tongDiem: diem }, // Truyền tổng điểm vào
+                success: function (response) {
+                    // Xử lý thành công nếu cần
+                },
+                error: function () {
+                    alert("Đã xảy ra lỗi khi cập nhật trạng thái đã nộp và tổng điểm.");
+                }
+            });
         }
     </script>
 

@@ -21,6 +21,8 @@ public partial class DeThi
 
     public virtual ICollection<DeThisChiTiet> DeThisChiTiets { get; set; } = new List<DeThisChiTiet>();
 
+    public virtual ICollection<KetQua> KetQuas { get; set; } = new List<KetQua>();
+
     public virtual GiaoVien? NguoiTaoNavigation { get; set; }
 
     public virtual ICollection<HocSinh> MaThanhViens { get; set; } = new List<HocSinh>();

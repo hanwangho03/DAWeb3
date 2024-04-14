@@ -21,6 +21,8 @@ public partial class WebTracNghiemContext : DbContext
 
     public virtual DbSet<CauHoi> CauHois { get; set; }
 
+    public virtual DbSet<ChiTietKetQua> ChiTietKetQuas { get; set; }
+
     public virtual DbSet<Chuong> Chuongs { get; set; }
 
     public virtual DbSet<DapAn> DapAns { get; set; }
@@ -45,7 +47,7 @@ public partial class WebTracNghiemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=THUAN\\MSSQLSERVER02;Database=WebTracNghiem;User Id=sa;Password=123456;TrustServerCertificate=true;");
+        => optionsBuilder.UseSqlServer("Server=THUAN\\MSSQLSERVER02;Database=WebTracNghiem;User Id=sa;Password=123456;Trusted_Connection=True;TrustServerCertificate=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -124,6 +126,26 @@ public partial class WebTracNghiemContext : DbContext
             entity.HasOne(d => d.NguoitaoNavigation).WithMany(p => p.CauHois)
                 .HasForeignKey(d => d.Nguoitao)
                 .HasConstraintName("FK_CauHois_GiaoViens");
+        });
+
+        modelBuilder.Entity<ChiTietKetQua>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ChiTietKetQua_1");
+
+            entity.ToTable("ChiTietKetQua");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IdCauhoiDeThi).HasColumnName("idCauhoiDeThi");
+            entity.Property(e => e.Idketqua).HasColumnName("idketqua");
+
+            entity.HasOne(d => d.IdCauhoiDeThiNavigation).WithMany(p => p.ChiTietKetQuas)
+                .HasForeignKey(d => d.IdCauhoiDeThi)
+                .HasConstraintName("FK_ChiTietKetQua_DeThis_ChiTiets");
+
+            entity.HasOne(d => d.IdketquaNavigation).WithMany(p => p.ChiTietKetQuas)
+                .HasForeignKey(d => d.Idketqua)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietKetQua_KetQuas");
         });
 
         modelBuilder.Entity<Chuong>(entity =>
@@ -286,25 +308,19 @@ public partial class WebTracNghiemContext : DbContext
 
         modelBuilder.Entity<KetQua>(entity =>
         {
-            entity.HasKey(e => new { e.IdThanhVien, e.IdCauHoiDeThi }).HasName("PK_KetQuas_1");
+            entity.HasKey(e => e.IdKetQua);
 
+            entity.Property(e => e.IdKetQua).HasColumnName("idKetQua");
+            entity.Property(e => e.DaXoa).HasDefaultValue((byte)0);
+            entity.Property(e => e.IdDethi).HasColumnName("idDethi");
             entity.Property(e => e.IdThanhVien)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("idThanhVien");
-            entity.Property(e => e.IdCauHoiDeThi).HasColumnName("idCauHoi_DeThi");
-            entity.Property(e => e.DaXoa).HasDefaultValue((byte)0);
-            entity.Property(e => e.Dapandachon).HasColumnName("dapandachon");
-            entity.Property(e => e.IdCauhoidalam).HasColumnName("idCauhoidalam");
 
-            entity.HasOne(d => d.IdCauHoiDeThiNavigation).WithMany(p => p.KetQuaIdCauHoiDeThiNavigations)
-                .HasForeignKey(d => d.IdCauHoiDeThi)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_KetQuas_DeThis_ChiTiets1");
-
-            entity.HasOne(d => d.IdCauhoidalamNavigation).WithMany(p => p.KetQuaIdCauhoidalamNavigations)
-                .HasForeignKey(d => d.IdCauhoidalam)
-                .HasConstraintName("FK_KetQuas_DeThis_ChiTiets");
+            entity.HasOne(d => d.IdDethiNavigation).WithMany(p => p.KetQuas)
+                .HasForeignKey(d => d.IdDethi)
+                .HasConstraintName("FK_KetQuas_DeThis");
 
             entity.HasOne(d => d.IdThanhVienNavigation).WithMany(p => p.KetQuas)
                 .HasForeignKey(d => d.IdThanhVien)

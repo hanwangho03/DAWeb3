@@ -9,7 +9,10 @@ namespace DAWeb3
             // Thêm dịch vụ Session
             services.AddHttpContextAccessor();
             services.AddSession();
-
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Đặt thời gian timeout của session là 30 phút
+            });
             // Các cấu hình và thêm các dịch vụ khác
         }
 

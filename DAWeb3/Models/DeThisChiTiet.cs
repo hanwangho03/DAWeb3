@@ -11,11 +11,9 @@ public partial class DeThisChiTiet
 
     public long? IdCauHoi { get; set; }
 
+    public virtual ICollection<ChiTietKetQua> ChiTietKetQuas { get; set; } = new List<ChiTietKetQua>();
+
     public virtual CauHoi? IdCauHoiNavigation { get; set; }
 
     public virtual DeThi? IdDeThiNavigation { get; set; }
-
-    public virtual ICollection<KetQua> KetQuaIdCauHoiDeThiNavigations { get; set; } = new List<KetQua>();
-
-    public virtual ICollection<KetQua> KetQuaIdCauhoidalamNavigations { get; set; } = new List<KetQua>();
 }

@@ -1,0 +1,118 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@{
+    ViewData["Title"] = "Xem Chi Tiết";
+}
+<style>
+    /* Định nghĩa font Roboto Slab */
+    import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+
+    /* Áp dụng font cho các phần tử trong view */
+    body {
+        font-family: 'Roboto Slab', serif; /* Sử dụng font Roboto Slab cho toàn bộ nội dung */
+    }
+
+    /* Chế độ bold cho các phần tử có class là 'bold' */
+    .bold {
+        font-weight: bold;
+    }
+
+    .green-text {
+        color: green;
+    }
+
+    .total-score {
+        position: fixed;
+        top: 50px; /* Điều chỉnh vị trí từ đỉnh màn hình */
+        right: 50px; /* Điều chỉnh vị trí từ cạnh phải màn hình */
+        font-size: 35px;
+        font-weight: bold;
+        color: red;
+    }
+</style>
+<h2>Bạn đã hoàn thành bài thi!</h2>
+
+<div>
+    <p class="total-score">Điểm số: @ViewBag.TotalScore</p>
+    @foreach (var cauHoiId in ViewBag.DanhSachIdCauHoi)
+    {
+        <div>
+
+            
+            @foreach (var cauHoi in ViewBag.DanhSachCauHoi)
+            {
+
+                if (cauHoi.IdCauhoi == cauHoiId)
+                {
+                    var dapAnDaChon = ViewBag.DanhSachDapAnDaChon[ViewBag.DanhSachIdCauHoi.IndexOf(cauHoiId)];
+                    var idDapAnDung = ViewBag.DanhSachIdDapAnDung[ViewBag.DanhSachIdCauHoi.IndexOf(cauHoiId)];
+                    <p class="bold">Câu Hỏi: @cauHoi.CauHoi1</p>
+                    <ul>
+                        <li>
+                            <label>
+                                <p class="bold">@cauHoi.DapAnA</p>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <p class="bold">@cauHoi.DapAnB</p>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <p class="bold">@cauHoi.DapAnC</p>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <p class="bold">@cauHoi.DapAnD</p>
+                            </label>
+                        </li>
+                        <p class="bold">Đáp án đã chọn @(dapAnDaChon == 1 ? "A" : dapAnDaChon == 2 ? "B" : dapAnDaChon == 3 ? "C" : "D") : @GetDapAnDaChonContent(cauHoi, dapAnDaChon)</p>
+                        <p class="bold green-text">Đáp án đúng @(idDapAnDung == 1 ? "A" : idDapAnDung == 2 ? "B" : idDapAnDung == 3 ? "C" : "D") : @GetDapAnDungContent(cauHoi, idDapAnDung)</p>
+                    </ul>
+                    <hr />
+                }
+   
+            }
+            
+        </div>
+    }
+</div>
+@functions {
+    public string GetDapAnDaChonContent(dynamic cauHoi, int dapAnDaChon)
+    {
+        switch (dapAnDaChon)
+        {
+            case 1:
+                return cauHoi.DapAnA;
+            case 2:
+                return cauHoi.DapAnB;
+            case 3:
+                return cauHoi.DapAnC;
+            case 4:
+                return cauHoi.DapAnD;
+            default:
+                return "";
+        }
+    }
+    public string GetDapAnDungContent(dynamic cauHoi, int idDapAnDung)
+    {
+        switch (idDapAnDung)
+        {
+            case 1:
+                return cauHoi.DapAnA;
+            case 2:
+                return cauHoi.DapAnB;
+            case 3:
+                return cauHoi.DapAnC;
+            case 4:
+                return cauHoi.DapAnD;
+            default:
+                return "";
+        }
+    }
+}

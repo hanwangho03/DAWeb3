@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-AdQ0zFEr/uHLs2c6aDl4DOPeNl+gO+XaZbD6zliqOsJfT+4Pzjr6z+NqlK84lDt5" crossorigin="anonymous">
 <h1>Index</h1>
 @if (TempData["AlertMessage"] != null)
 {
@@ -42,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.NgayThi)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ThoiGianThi)
+                @Html.DisplayFor(modelItem => item.ThoiGianThi) Phút
             </td>
             
             <td>
@@ -53,8 +53,8 @@
                 @Html.DisplayFor(modelItem => item.NguoiTaoNavigation.Hoten)
             </td>
             <td>
-                <a asp-action="Start" asp-route-id="@item.IdDeThi">Bắt đầu thi</a> 
-                
+                <a asp-action="Start" asp-route-id="@item.IdDeThi">Bắt đầu thi/Xem Chi Tiết</a>
+                   
             </td>
         </tr>
 }

@@ -7,19 +7,19 @@ public partial class KetQua
 {
     public string IdThanhVien { get; set; } = null!;
 
-    public long IdCauHoiDeThi { get; set; }
+    public byte? DaXoa { get; set; }
+
+    public long IdKetQua { get; set; }
 
     public double? TongDiem { get; set; }
 
-    public byte? DaXoa { get; set; }
+    public byte? DaNop { get; set; }
 
-    public long? IdCauhoidalam { get; set; }
+    public int? IdDethi { get; set; }
 
-    public int? Dapandachon { get; set; }
+    public virtual ICollection<ChiTietKetQua> ChiTietKetQuas { get; set; } = new List<ChiTietKetQua>();
 
-    public virtual DeThisChiTiet IdCauHoiDeThiNavigation { get; set; } = null!;
-
-    public virtual DeThisChiTiet? IdCauhoidalamNavigation { get; set; }
+    public virtual DeThi? IdDethiNavigation { get; set; }
 
     public virtual HocSinh IdThanhVienNavigation { get; set; } = null!;
 }
