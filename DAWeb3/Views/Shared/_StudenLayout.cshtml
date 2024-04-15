@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "_StudenLayout";
+}
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Học sinh</title>
+    <!-- Bao gồm thư viện CSS của Bootstrap v5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bao gồm thư viện JavaScript cần thiết của Bootstrap v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    
+   @*  @{
+       Html.RenderPartial("_Navbar", "Admin");
+    } *@
+   
+    <div class="container" style="margin-top: 80px;">
+        <div class="card">
+            <div class="card-header bg-primary text-white">Thi Trắc Nghiệm</div>
+            <div class="card-body">@RenderBody()</div>
+            <div class="card-footer"><p>© 2016 Company, Inc.</p></div>
+        </div>
+    </div>
+
+   
+       
+        <a id="logoutButton" class="btn btn-danger" href="#" style="position: absolute; top: 20px; right: 20px;">Đăng xuất</a>
+   
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+<script>
+    // Đợi tài liệu được tải hoàn toàn trước khi thêm xử lý sự kiện
+    $(document).ready(function () {
+        // Xử lý sự kiện khi nhấn nút đăng xuất
+        $("#logoutButton").click(function (e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của nút đăng xuất
+
+            // Gửi yêu cầu đăng xuất đến server
+            $.get("/Default/Logout", function (data) {
+                // Chuyển hướng người dùng đến trang đăng nhập sau khi đăng xuất thành công
+                window.location.href = "/Default/Login";
+            });
+        });
+    });
+
+</script>
+

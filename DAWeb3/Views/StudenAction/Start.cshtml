@@ -141,15 +141,15 @@
                         }
                     });
                     // Hiển thị id của đáp án đã chọn ra màn hình để kiểm tra
-                    alert("Id đáp án đã chọn: " + daChon);
+                    
                     
 
                     // Kiểm tra đáp án đã chọn có đúng không
                     if (daChon == dapAnDung) {
-                        alert("Đáp án đã chọn là đúng!");
+                       
                         tongSoCauDung++; // Tăng tổng số câu đúng lên nếu đáp án chọn đúng
                     } else {
-                        alert("Đáp án đã chọn là không đúng!");
+                        
                     }
 
                     // Xử lý lưu câu trả lời của câu hỏi có ID là cauHoiId
@@ -192,7 +192,7 @@
                 type: 'POST',
                 data: { idKetQua: idKetQua, tongDiem: diem }, // Truyền tổng điểm vào
                 success: function (response) {
-                    // Xử lý thành công nếu cần
+                    window.location.href = '/Studenaction/Index';
                 },
                 error: function () {
                     alert("Đã xảy ra lỗi khi cập nhật trạng thái đã nộp và tổng điểm.");

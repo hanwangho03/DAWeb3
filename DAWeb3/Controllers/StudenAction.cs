@@ -17,8 +17,11 @@ namespace DAWeb3.Controllers
         public async Task<IActionResult> Index()
         {
             var webTracNghiemContext = _context.DeThis.Include(d => d.NguoiTaoNavigation);
+            var maDangNhap = HttpContext.Session.GetString("user");
+            ViewBag.MaDangNhap = maDangNhap;
             return View(await webTracNghiemContext.ToListAsync());
         }
+
         public async Task<IActionResult> Start(int id)
         {
             var maDangNhap = HttpContext.Session.GetString("user");
@@ -36,7 +39,8 @@ namespace DAWeb3.Controllers
 
             // Đặt các thuộc tính cho đối tượng KetQua
             // Giả sử bạn muốn lưu IdDeThi khi người dùng bắt đầu thi
-            ketQua.IdThanhVien = maDangNhap; // Sử dụng mã đăng nhập của học sinh làm IdThanhVien
+            ketQua.IdThanhVien = maDangNhap;
+            
             ketQua.IdDethi = id;
             // Thêm đối tượng KetQua vào context
             _context.KetQuas.Add(ketQua);
@@ -104,6 +108,7 @@ namespace DAWeb3.Controllers
             {
                 return NotFound();
             }
+            return RedirectToAction("Index", "Studenaction");
         }
 
         public int? GetDapAnDung(int cauHoiId)

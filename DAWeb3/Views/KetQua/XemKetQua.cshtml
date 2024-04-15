@@ -1,0 +1,42 @@
+﻿@model IEnumerable<DAWeb3.Models.KetQua>
+
+@{
+    ViewData["Title"] = "Xem kết quả";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Danh sách thành viên đã thi đề thi</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên thành viên
+            </th>
+            <th>
+                Lớp
+            </th>
+            <th>
+                Điểm số
+            </th>
+            <!-- Thêm các cột khác nếu cần -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ketQua in Model)
+        {
+            <tr>
+                <td>
+                    @ketQua.IdThanhVienNavigation.HoTen
+                </td>
+                <td>
+                    @ketQua.IdThanhVienNavigation.MaKhoiNavigation.TenKhoi
+                </td>
+                <td>
+                    @ketQua.TongDiem
+                </td>
+                <!-- Hiển thị thông tin chi tiết kết quả nếu cần -->
+            </tr>
+        }
+    </tbody>
+</table>

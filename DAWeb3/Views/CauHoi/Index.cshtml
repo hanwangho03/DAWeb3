@@ -11,8 +11,8 @@
         word-wrap: break-word; /* Tự động xuống dòng cho các từ dài */
     }
 </style>
-
-<h1>Index</h1>
+<title>Danh Sách Câu Hỏi</title>
+<h1>Danh Sách Câu Hỏi</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -84,9 +84,23 @@
                 @Html.DisplayFor(modelItem => item.NguoitaoNavigation.Hoten)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCauhoi">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdCauhoi">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCauhoi">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdCauhoi">
+                        <button class="btn btn-xs btn-warning" name="update">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </button>
+                    </a>
+
+                    <a asp-action="Details" asp-route-id="@item.IdCauhoi">
+                        <button class="btn btn-xs btn-info" name="view">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.IdCauhoi">
+                        <button class="btn btn-xs btn-danger" name="delete">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </a>
             </td>
         </tr>
 }

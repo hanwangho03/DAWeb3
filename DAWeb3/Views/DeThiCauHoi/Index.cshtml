@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Đề Thi Câu Hỏi</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -32,9 +32,23 @@
                 @Html.DisplayFor(modelItem => item.IdDeThiNavigation.TenDeThi)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">
+                        <button class="btn btn-xs btn-warning" name="update">
+                            <i class="fas fa-edit" aria-hidden="true"></i> Edit
+                        </button>
+                    </a>
+
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        <button class="btn btn-xs btn-info" name="view">
+                            <i class="fas fa-eye" aria-hidden="true"></i> Details
+                        </button>
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <button class="btn btn-xs btn-danger" name="delete">
+                            <i class="fas fa-trash" aria-hidden="true"></i> Delete
+                        </button>
+                    </a>
             </td>
         </tr>
 }

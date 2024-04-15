@@ -1,20 +1,38 @@
 ﻿@model IEnumerable<DAWeb3.Models.DeThi>
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Đề thi";
+    Layout = "~/Views/Shared/_StudenLayout.cshtml";
 }
+@{
+    var maThanhVien = ViewBag.MaThanhVien;
+}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-AdQ0zFEr/uHLs2c6aDl4DOPeNl+gO+XaZbD6zliqOsJfT+4Pzjr6z+NqlK84lDt5" crossorigin="anonymous">
-<h1>Index</h1>
+<style>
+    body {
+        font-family: 'Bitter', serif;
+        font-size: 17px;
+    }
+
+    .profile-button-container {
+        position: absolute;
+        top: -60px;
+        right: 30px;
+    }
+</style>
+<h1>Danh Sách Đề Thi</h1>
 @if (TempData["AlertMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
         @TempData["AlertMessage"]
     </div>
 }
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+<div class="profile-button-container">
+    <a id="profileButton" class="btn btn-success" href="#">Xem hồ sơ</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -24,11 +42,11 @@
             <th>
                 Thời gian
             </th>
-            
+
             <th>
-                Tên đề thi 
+                Tên đề thi
             </th>
-            
+
             <th>
                 Người tạo
             </th>
@@ -36,27 +54,43 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NgayThi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThoiGianThi) Phút
-            </td>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.TenDeThi)
-            </td>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.NguoiTaoNavigation.Hoten)
-            </td>
-            <td>
-                <a asp-action="Start" asp-route-id="@item.IdDeThi">Bắt đầu thi/Xem Chi Tiết</a>
-                   
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NgayThi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ThoiGianThi) Phút
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenDeThi)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.NguoiTaoNavigation.Hoten)
+                </td>
+                <td>
+                    <a asp-action="Start" asp-route-id="@item.IdDeThi">Bắt đầu thi/Xem Chi Tiết</a>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    // Đợi tài liệu được tải hoàn toàn trước khi thêm xử lý sự kiện
+    $(document).ready(function () {
+        // Xử lý sự kiện khi nhấn nút xem hồ sơ
+        $("#profileButton").click(function (e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+
+            var maThanhVien = "@TempData["AlertMessage"]"; // Sử dụng biến maThanhVien đã khai báo ở phần Razor
+            window.open("/HocSinh/Details/" + maThanhVien);
+            // Mở trang mới và hiển thị view Details của controller học sinh
+
+        });
+    });
+</script>

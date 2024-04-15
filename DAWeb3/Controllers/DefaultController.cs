@@ -50,7 +50,7 @@ namespace DAWeb3.Controllers
                 {
                     HttpContext.Session.SetString("user", username);
                     TempData["AlertMessage"] = "Mã thành viên: " + accteacher.Magiaovien; // Thêm mã thành viên vào TempData để hiển thị trong alert
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("Index", "KetQua");
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace DAWeb3.Controllers
                     if (student != null)
                     {
                         HttpContext.Session.SetString("user", username);
-                        TempData["AlertMessage"] = "Mã thành viên: " + student.MaThanhVien; // Thêm mã thành viên vào TempData để hiển thị trong alert
+                        TempData["AlertMessage"] =  student.MaThanhVien; // Thêm mã thành viên vào TempData để hiển thị trong alert
                         return RedirectToAction("Index", "StudenAction");
                     }
                     else
@@ -68,6 +68,13 @@ namespace DAWeb3.Controllers
                     }
                 }
             }
+        }
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            // Xóa session khi đăng xuất
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
     }
 }
