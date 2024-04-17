@@ -12,15 +12,26 @@ namespace DAWeb3.Controllers
     public class HocSinhController : Controller
     {
         private readonly WebTracNghiemContext _context;
-
-        public HocSinhController(WebTracNghiemContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public HocSinhController(IHttpContextAccessor httpContextAccessor, WebTracNghiemContext context)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
+        }
+        private async Task<bool> IsHocSinh()
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            return await _context.HocSinhs.AnyAsync(h => h.MaThanhVien == username);
         }
 
         // GET: HocSinh
         public async Task<IActionResult> Index()
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             var webTracNghiemContext = _context.HocSinhs.Include(h => h.MaKhoiNavigation);
             return View(await webTracNghiemContext.ToListAsync());
         }
@@ -28,6 +39,7 @@ namespace DAWeb3.Controllers
         // GET: HocSinh/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            
             if (id == null)
             {
                 return NotFound();
@@ -45,8 +57,12 @@ namespace DAWeb3.Controllers
         }
 
         // GET: HocSinh/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             ViewData["MaKhoi"] = new SelectList(_context.Khois, "IdKhoi", "TenKhoi");
             return View();
         }
@@ -71,6 +87,7 @@ namespace DAWeb3.Controllers
         // GET: HocSinh/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            
             if (id == null)
             {
                 return NotFound();
@@ -124,6 +141,10 @@ namespace DAWeb3.Controllers
         // GET: HocSinh/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();

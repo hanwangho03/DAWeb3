@@ -11,16 +11,27 @@ namespace DAWeb3.Controllers
 {
     public class DeThiCauHoiController : Controller
     {
+        
         private readonly WebTracNghiemContext _context;
-
-        public DeThiCauHoiController(WebTracNghiemContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public DeThiCauHoiController(IHttpContextAccessor httpContextAccessor, WebTracNghiemContext context)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
         }
-
+        private async Task<bool> IsHocSinh()
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            return await _context.HocSinhs.AnyAsync(h => h.MaThanhVien == username);
+        }
         // GET: DeThiCauHoi
         public async Task<IActionResult> Index()
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             var webTracNghiemContext = _context.DeThisChiTiets.Include(d => d.IdCauHoiNavigation).Include(d => d.IdDeThiNavigation);
             return View(await webTracNghiemContext.ToListAsync());
         }
@@ -28,6 +39,10 @@ namespace DAWeb3.Controllers
         // GET: DeThiCauHoi/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -46,8 +61,12 @@ namespace DAWeb3.Controllers
         }
 
         // GET: DeThiCauHoi/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             ViewData["IdCauHoi"] = new SelectList(_context.CauHois, "IdCauhoi", "CauHoi1");
             ViewData["IdDeThi"] = new SelectList(_context.DeThis, "IdDeThi", "TenDeThi");
             return View();
@@ -74,6 +93,10 @@ namespace DAWeb3.Controllers
         // GET: DeThiCauHoi/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -129,6 +152,10 @@ namespace DAWeb3.Controllers
         // GET: DeThiCauHoi/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();

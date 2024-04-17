@@ -13,20 +13,50 @@ namespace DAWeb3.Controllers
     {
         private readonly WebTracNghiemContext _context;
 
-        public GiaoVienController(WebTracNghiemContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public GiaoVienController(IHttpContextAccessor httpContextAccessor, WebTracNghiemContext context)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
+        }
+        private async Task<bool> IsHocSinh()
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            return await _context.HocSinhs.AnyAsync(h => h.MaThanhVien == username);
         }
 
         // GET: GiaoVien
         public async Task<IActionResult> Index()
         {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            var isAdmin = _context.Admins.Any(a => a.TaiKhoan == username);
+            if (!isAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             return View(await _context.GiaoViens.ToListAsync());
         }
 
         // GET: GiaoVien/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            var isAdmin = _context.Admins.Any(a => a.TaiKhoan == username);
+            if (!isAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -43,8 +73,19 @@ namespace DAWeb3.Controllers
         }
 
         // GET: GiaoVien/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            var isAdmin = _context.Admins.Any(a => a.TaiKhoan == username);
+            if (!isAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             return View();
         }
 
@@ -68,6 +109,17 @@ namespace DAWeb3.Controllers
         
         public async Task<IActionResult> Edit(int? id)
         {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            var isAdmin = _context.Admins.Any(a => a.TaiKhoan == username);
+            if (!isAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -119,6 +171,17 @@ namespace DAWeb3.Controllers
         // GET: GiaoVien/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var username = session.GetString("user");
+            var isAdmin = _context.Admins.Any(a => a.TaiKhoan == username);
+            if (!isAdmin)
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
+            if (await IsHocSinh())
+            {
+                return RedirectToAction("AccessDenied", "Admin");
+            }
             if (id == null)
             {
                 return NotFound();
