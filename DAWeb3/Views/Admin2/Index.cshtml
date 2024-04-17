@@ -1,0 +1,37 @@
+﻿@model IEnumerable<DAWeb3.Models.Admin>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Danh sách Admin</h1>
+
+<p>
+    <a asp-action="Create">Tạo mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tài khoản
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TaiKhoan)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TaiKhoan">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.TaiKhoan">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.TaiKhoan">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
