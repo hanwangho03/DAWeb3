@@ -32,7 +32,7 @@ namespace DAWeb3.Controllers
             {
                 return RedirectToAction("AccessDenied", "Admin");
             }
-            var webTracNghiemContext = _context.DeThisChiTiets.Include(d => d.IdCauHoiNavigation).Include(d => d.IdDeThiNavigation);
+            var webTracNghiemContext = _context.DeThisChiTiets.Include(d => d.IdCauHoiNavigation).Include(d => d.IdDeThiNavigation).OrderBy(d => d.IdDeThiNavigation.TenDeThi); ;
             return View(await webTracNghiemContext.ToListAsync());
         }
 

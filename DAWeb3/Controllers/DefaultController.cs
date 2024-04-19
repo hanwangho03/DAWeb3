@@ -25,7 +25,7 @@ namespace DAWeb3.Controllers
             var session = _httpContextAccessor.HttpContext.Session;
             if (session.GetString("user") != null)
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Default", "Login");
             }
             return View();
             
@@ -63,7 +63,7 @@ namespace DAWeb3.Controllers
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Đăng nhập thất bại!";
+                        TempData["ErrorMessage"] = "Dang Nhap That Bai !!!";
                         return RedirectToAction("Login");
                     }
                 }

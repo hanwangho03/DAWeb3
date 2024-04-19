@@ -4,7 +4,17 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-jlQF4SkbE/bL8BU+vZbgmUWpnXu2OomGPwDeh0r5M6H1yrMbg52Q2GJ2PBmq6xNeeRh8QFfrO9Kzo0FyLC8F3Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+<style>
+    body {
+        background-image: url('https://img.freepik.com/free-vector/hand-drawn-back-school-background_23-2149464866.jpg');
+        background-size: contain; /* Hiển thị hình ảnh mà không bị cắt bớt và giữ tỉ lệ */
+        background-repeat: no-repeat; /* Ngăn lặp lại hình ảnh nền */
+        background-position: center; /* Căn giữa hình ảnh */
+        background-size: cover;
+    }
+</style>
 <h1>Danh sách Admin</h1>
 
 <p>
@@ -27,9 +37,23 @@
                     @Html.DisplayFor(modelItem => item.TaiKhoan)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.TaiKhoan">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.TaiKhoan">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.TaiKhoan">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.TaiKhoan">
+                        <button class="btn btn-xs btn-warning" name="update">
+                            <i class="fas fa-edit" aria-hidden="true"></i> Edit
+                        </button>
+                    </a>
+
+                    <a asp-action="Details" asp-route-id="@item.TaiKhoan">
+                        <button class="btn btn-xs btn-info" name="view">
+                            <i class="fas fa-eye" aria-hidden="true"></i> Details
+                        </button>
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.TaiKhoan">
+                        <button class="btn btn-xs btn-danger" name="delete">
+                            <i class="fas fa-trash" aria-hidden="true"></i> Delete
+                        </button>
+                    </a>
                 </td>
             </tr>
         }

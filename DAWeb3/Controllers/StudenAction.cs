@@ -16,7 +16,9 @@ namespace DAWeb3.Controllers
         // GET: DeThi
         public async Task<IActionResult> Index()
         {
-            var webTracNghiemContext = _context.DeThis.Include(d => d.NguoiTaoNavigation);
+            var webTracNghiemContext = _context.DeThis
+                                           .Where(d => d.DaXoa == null || d.DaXoa == 0) // Lọc các đề thi chưa bị đánh dấu xóa
+                                          .Include(d => d.NguoiTaoNavigation);
             var maDangNhap = HttpContext.Session.GetString("user");
             ViewBag.MaDangNhap = maDangNhap;
             return View(await webTracNghiemContext.ToListAsync());
@@ -50,7 +52,11 @@ namespace DAWeb3.Controllers
             {
                 return NotFound();
             }
-
+            if (DateTime.Now < deThi.NgayThi)
+            {
+                
+                return RedirectToAction("ThoiGianThi", "StudenAction");
+            }
             // Truy vấn cơ sở dữ liệu để lấy ra danh sách câu hỏi thuộc đề thi đó
             var cauHoiList = await _context.DeThisChiTiets
                                             .Where(ch => ch.IdDeThi == id)
@@ -68,7 +74,10 @@ namespace DAWeb3.Controllers
             ViewBag.DeThiId = id;
             return View(cauHoiList);
         }
-
+        public IActionResult ThoiGianThi()
+        {
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> SaveAnswer(int idKetQua, int cauHoiId,byte dapandachon,byte dapandung)
         {

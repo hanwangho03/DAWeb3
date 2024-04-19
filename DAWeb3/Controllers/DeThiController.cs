@@ -33,7 +33,9 @@ namespace DAWeb3.Controllers
             {
                 return RedirectToAction("AccessDenied", "Admin");
             }
-            var webTracNghiemContext = _context.DeThis.Include(d => d.NguoiTaoNavigation);
+            var webTracNghiemContext = _context.DeThis
+                                           .Where(d => d.DaXoa == null || d.DaXoa == 0) // Lọc các đề thi chưa bị đánh dấu xóa
+                                          .Include(d => d.NguoiTaoNavigation);
             return View(await webTracNghiemContext.ToListAsync());
         }
 
@@ -174,12 +176,16 @@ namespace DAWeb3.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var deThi = await _context.DeThis.FindAsync(id);
-            if (deThi != null)
+            if (deThi == null)
             {
-                _context.DeThis.Remove(deThi);
+                return NotFound();
             }
 
+            // Set DaXoa to 1 instead of removing the entity
+            deThi.DaXoa = 1;
+            _context.DeThis.Update(deThi);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

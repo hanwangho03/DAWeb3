@@ -32,7 +32,7 @@ namespace DAWeb3.Controllers
             {
                 return RedirectToAction("AccessDenied", "Admin");
             }
-            var webTracNghiemContext = _context.CauHois.Include(c => c.IdBaiNavigation).Include(c => c.MaDapAnNavigation).Include(c => c.MaMucDoNavigation).Include(c => c.NguoitaoNavigation);
+            var webTracNghiemContext = _context.CauHois.Where(d => d.DaXoa == 0).Include(c => c.IdBaiNavigation).Include(c => c.MaDapAnNavigation).Include(c => c.MaMucDoNavigation).Include(c => c.NguoitaoNavigation);
             return View(await webTracNghiemContext.ToListAsync());
         }
 
@@ -201,13 +201,18 @@ namespace DAWeb3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+           
             var cauHoi = await _context.CauHois.FindAsync(id);
-            if (cauHoi != null)
+            if (cauHoi == null)
             {
-                _context.CauHois.Remove(cauHoi);
+                return NotFound();
             }
 
+            // Set DaXoa to 1 instead of removing the entity
+            cauHoi.DaXoa = 1;
+            _context.CauHois.Update(cauHoi);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
